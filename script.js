@@ -10,8 +10,6 @@ Follow me on twitter for more: https://twitter.com/HunorBorbely
 
 */
 
-console.log('!!1')
-
 // Extend the base functionality of JavaScript
 Array.prototype.last = function () {
   return this[this.length - 1];
@@ -37,6 +35,9 @@ let trees = [];
 // Todo: Save high score to localStorage (?)
 
 let score = 0;
+
+// const dpr = window.devicePixelRatio;
+// console.log(dpr)
 
 // Configuration
 const canvasWidth = 375;
@@ -66,6 +67,7 @@ const heroWidth = 17; // 24
 const heroHeight = 30; // 40
 
 const canvas = document.getElementById("game");
+
 canvas.width = window.innerWidth; // Make the Canvas full screen
 canvas.height = window.innerHeight;
 
@@ -178,11 +180,28 @@ window.addEventListener("mousedown", function () {
   }
 });
 
+window.addEventListener("touchstart", function (e) {
+  e.preventDefault()
+  if (phase === "waiting") {
+    lastTimestamp = undefined;
+    introductionElement.style.opacity = 0;
+    phase = "stretching";
+    window.requestAnimationFrame(animate);
+  }
+},  { passive: false });
+
 window.addEventListener("mouseup", function () {
   if (phase === "stretching") {
     phase = "turning";
   }
 });
+
+window.addEventListener("touchend", function (e) {
+  e.preventDefault()
+  if (phase === "stretching") {
+    phase = "turning";
+  }
+},  { passive: false });
 
 window.addEventListener("resize", function () {
   canvas.width = window.innerWidth;
@@ -334,9 +353,16 @@ function draw() {
 
   // Restore transformation
   ctx.restore();
+
+  // ctx.scale(1.5, 1.5)
 }
 
 restartButton.addEventListener("click", function (event) {
+  event.preventDefault();
+  resetGame();
+  restartButton.style.display = "none";
+});
+restartButton.addEventListener("touchend", function (event) {
   event.preventDefault();
   resetGame();
   restartButton.style.display = "none";
