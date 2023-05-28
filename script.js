@@ -46,7 +46,7 @@ const canvasHeight = 375;
 const platformHeight = 100;
 const firstPlatformWidth = 30 * scale;
 const platformMinGap = 40 * scale;
-const platformMaxGap = scale < 2 ? 200 : window.innerWidth / 2;
+const platformMaxGap = scale < 2 ? 200 : (window.innerWidth / 2) - 10;
 const platformMinWidth = 20 * scale;
 const platformMaxWidth = 100 * scale;
 const stickWidth = 2 * scale;
@@ -72,8 +72,8 @@ const walkingSpeed = 4 / scale;
 const transitioningSpeed = 2 / scale;
 const fallingSpeed = 2 / scale;
 
-const heroWidth = 17 * scale; // 24
-const heroHeight = 30 * scale; // 40
+const heroWidth = 32 * scale; // 24
+const heroHeight = 32 * scale; // 40
 
 const canvas = document.getElementById("game");
 
@@ -90,8 +90,12 @@ const bestScoreElement = document.getElementById("best-score-value");
 
 bestScoreElement.innerText = bestScore
 
-// Initialize layout
-resetGame();
+const heroImg = new Image()
+heroImg.src = './assets/Ron.png'
+heroImg.onload = () => {
+  // Initialize layout
+  resetGame();
+}
 
 // Resets game variables and layouts but does not start the game (game starts on keypress)
 function resetGame() {
@@ -172,8 +176,6 @@ function generatePlatform() {
 
   platforms.push({ x, w });
 }
-
-resetGame();
 
 // If space was pressed restart the game
 window.addEventListener("keydown", function (event) {
@@ -402,7 +404,7 @@ function drawPlatforms() {
 
     // Draw perfect area only if hero did not yet reach the platform
     if (sticks.last().x < x) {
-      ctx.fillStyle = "red";
+      ctx.fillStyle = "#FF9844";
       ctx.fillRect(
         x + w / 2 - perfectAreaSize / 2,
         canvasHeight - platformHeight,
@@ -415,65 +417,16 @@ function drawPlatforms() {
 
 function drawHero() {
   ctx.save();
-  ctx.fillStyle = "black";
-  ctx.translate(
-    heroX - heroWidth / 2,
-    heroY + canvasHeight - platformHeight - heroHeight / 2
-  );
 
-  // Body
-  drawRoundedRect(
-    -heroWidth / 2,
-    -heroHeight / 2,
+  ctx.drawImage(
+    heroImg,
+    heroX - heroWidth,
+    heroY + canvasHeight - platformHeight - heroHeight,
     heroWidth,
-    heroHeight - 4,
-    5
+    heroHeight,
   );
-
-  // Legs
-  const legDistance = 5;
-  ctx.beginPath();
-  ctx.arc(legDistance, 11.5, 3, 0, Math.PI * 2, false);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(-legDistance, 11.5, 3, 0, Math.PI * 2, false);
-  ctx.fill();
-
-  // Eye
-  ctx.beginPath();
-  ctx.fillStyle = "white";
-  ctx.arc(5, -7, 3, 0, Math.PI * 2, false);
-  ctx.fill();
-
-  // Band
-  ctx.fillStyle = "red";
-  ctx.fillRect(-heroWidth / 2 - 1, -12, heroWidth + 2, 4.5);
-  ctx.beginPath();
-  ctx.moveTo(-9, -14.5);
-  ctx.lineTo(-17, -18.5);
-  ctx.lineTo(-14, -8.5);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.moveTo(-10, -10.5);
-  ctx.lineTo(-15, -3.5);
-  ctx.lineTo(-5, -7);
-  ctx.fill();
 
   ctx.restore();
-}
-
-function drawRoundedRect(x, y, width, height, radius) {
-  ctx.beginPath();
-  ctx.moveTo(x, y + radius);
-  ctx.lineTo(x, y + height - radius);
-  ctx.arcTo(x, y + height, x + radius, y + height, radius);
-  ctx.lineTo(x + width - radius, y + height);
-  ctx.arcTo(x + width, y + height, x + width, y + height - radius, radius);
-  ctx.lineTo(x + width, y + radius);
-  ctx.arcTo(x + width, y, x + width - radius, y, radius);
-  ctx.lineTo(x + radius, y);
-  ctx.arcTo(x, y, x, y + radius, radius);
-  ctx.fill();
 }
 
 function drawSticks() {
