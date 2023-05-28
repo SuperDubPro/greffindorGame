@@ -2,6 +2,7 @@ html,
 body {
     height: 100%;
     margin: 0;
+    font-size: calc( (100vw - 480px)/(1280 - 480) * (24 - 16) + 24px);
 }
 
 body {
@@ -21,7 +22,7 @@ body {
     position: absolute;
     top: 30px;
     right: 30px;
-    font-size: 2em;
+    /*font-size: 2em;*/
     font-weight: 900;
 }
 
@@ -29,23 +30,26 @@ body {
     width: 200px;
     height: 150px;
     position: absolute;
+    top: 40%;
     font-weight: 600;
-    font-size: 0.8em;
+    /*font-size: 0.8em;*/
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     text-align: center;
     transition: opacity 2s;
 }
 
 #restart {
-    width: 120px;
-    height: 120px;
+    width: 168px;
+    height: 168px;
+    top: 40%;
     position: absolute;
     border-radius: 50%;
     color: white;
     background-color: red;
     border: none;
+    text-align: center;
     font-weight: 700;
-    font-size: 1.2em;
+    font-size: 1.2rem;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     display: none;
     cursor: pointer;

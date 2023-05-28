@@ -36,35 +36,43 @@ let trees = [];
 
 let score = 0;
 
-// const dpr = window.devicePixelRatio;
-// console.log(dpr)
+const scale = window.devicePixelRatio
 
 // Configuration
 const canvasWidth = 375;
 const canvasHeight = 375;
+
 const platformHeight = 100;
+const firstPlatformWidth = 30 * scale;
+const platformMinGap = 40 * scale;
+const platformMaxGap = window.innerWidth / 2;
+const platformMinWidth = 20 * scale;
+const platformMaxWidth = 100 * scale;
+const stickWidth = 2 * scale;
+
 const heroDistanceFromEdge = 10; // While waiting
 const paddingX = 100; // The waiting position of the hero in from the original canvas size
-const perfectAreaSize = 10;
+const perfectAreaSize = 10 * scale;
 
 // The background moves slower than the hero
 const backgroundSpeedMultiplier = 0.2;
 
-const hill1BaseHeight = 100;
+const hill1BaseHeight = 100 * scale;
 const hill1Amplitude = 10;
 const hill1Stretch = 1;
-const hill2BaseHeight = 70;
+const hill2BaseHeight = 70 * scale;
 const hill2Amplitude = 20;
 const hill2Stretch = 0.5;
+const treeSize = scale;
 
-const stretchingSpeed = 4; // Milliseconds it takes to draw a pixel
-const turningSpeed = 4; // Milliseconds it takes to turn a degree
-const walkingSpeed = 4;
-const transitioningSpeed = 2;
-const fallingSpeed = 2;
+const stretchingSpeed = 4 / scale; // Milliseconds it takes to draw a pixel
+const turningSpeed = 4 / scale; // Milliseconds it takes to turn a degree
+const walkingSpeed = 4 / scale;
+const transitioningSpeed = 2 / scale;
+const fallingSpeed = 2 / scale;
 
-const heroWidth = 17; // 24
-const heroHeight = 30; // 40
+const heroWidth = 17 * scale; // 24
+const heroHeight = 30 * scale; // 40
 
 const canvas = document.getElementById("game");
 
@@ -96,7 +104,7 @@ function resetGame() {
 
   // The first platform is always the same
   // x + w has to match paddingX
-  platforms = [{ x: 50, w: 50 }];
+  platforms = [{ x: 50, w: firstPlatformWidth }];
   generatePlatform();
   generatePlatform();
   generatePlatform();
@@ -142,10 +150,10 @@ function generateTree() {
 }
 
 function generatePlatform() {
-  const minimumGap = 40;
-  const maximumGap = 200;
-  const minimumWidth = 20;
-  const maximumWidth = 100;
+  const minimumGap = platformMinGap;
+  const maximumGap = platformMaxGap;
+  const minimumWidth = platformMinWidth;
+  const maximumWidth = platformMaxWidth;
 
   // X coordinate of the right edge of the furthest platform
   const lastPlatform = platforms[platforms.length - 1];
@@ -465,7 +473,7 @@ function drawSticks() {
 
     // Draw stick
     ctx.beginPath();
-    ctx.lineWidth = 2;
+    ctx.lineWidth = stickWidth;
     ctx.moveTo(0, 0);
     ctx.lineTo(0, -stick.length);
     ctx.stroke();
@@ -511,10 +519,10 @@ function drawTree(x, color) {
     getTreeY(x, hill1BaseHeight, hill1Amplitude)
   );
 
-  const treeTrunkHeight = 5;
-  const treeTrunkWidth = 2;
-  const treeCrownHeight = 25;
-  const treeCrownWidth = 10;
+  const treeTrunkHeight = 5 * treeSize;
+  const treeTrunkWidth = 2 * treeSize;
+  const treeCrownHeight = 25 * treeSize;
+  const treeCrownWidth = 10 * treeSize;
 
   // Draw trunk
   ctx.fillStyle = "#7D833C";
