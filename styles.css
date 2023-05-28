@@ -22,12 +22,20 @@ body {
     position: absolute;
     top: 30px;
     right: 30px;
-    /*font-size: 2em;*/
+    font-weight: 900;
+}
+
+#best-score {
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    top: 30px;
+    left: 30px;
     font-weight: 900;
 }
 
 #introduction {
-    width: 200px;
+    width: 40%;
     height: 150px;
     position: absolute;
     top: 40%;
@@ -39,8 +47,8 @@ body {
 }
 
 #restart {
-    width: 168px;
-    height: 168px;
+    width: 6rem;
+    height: 6rem;
     top: 40%;
     position: absolute;
     border-radius: 50%;

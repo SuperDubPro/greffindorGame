@@ -32,9 +32,10 @@ let platforms = [];
 let sticks = [];
 let trees = [];
 
-// Todo: Save high score to localStorage (?)
-
 let score = 0;
+const localStorageBestScoreKey = 'greffInDoorGameBestScore'
+const localBestScore = localStorage.getItem(localStorageBestScoreKey)
+let bestScore = localBestScore ? Number(localBestScore) : 0;
 
 const scale = window.devicePixelRatio
 
@@ -45,7 +46,7 @@ const canvasHeight = 375;
 const platformHeight = 100;
 const firstPlatformWidth = 30 * scale;
 const platformMinGap = 40 * scale;
-const platformMaxGap = window.innerWidth / 2;
+const platformMaxGap = scale < 2 ? 200 : window.innerWidth / 2;
 const platformMinWidth = 20 * scale;
 const platformMaxWidth = 100 * scale;
 const stickWidth = 2 * scale;
@@ -85,6 +86,9 @@ const introductionElement = document.getElementById("introduction");
 const perfectElement = document.getElementById("perfect");
 const restartButton = document.getElementById("restart");
 const scoreElement = document.getElementById("score");
+const bestScoreElement = document.getElementById("best-score-value");
+
+bestScoreElement.innerText = bestScore
 
 // Initialize layout
 resetGame();
@@ -219,6 +223,14 @@ window.addEventListener("resize", function () {
 
 window.requestAnimationFrame(animate);
 
+function setBestScore() {
+  if (score > bestScore) {
+    localStorage.setItem(localStorageBestScoreKey, score)
+    bestScore = score
+    bestScoreElement.innerText = score;
+  }
+}
+
 // The main game loop
 function animate(timestamp) {
   if (!lastTimestamp) {
@@ -304,6 +316,7 @@ function animate(timestamp) {
       const maxHeroY =
         platformHeight + 100 + (window.innerHeight - canvasHeight) / 2;
       if (heroY > maxHeroY) {
+        setBestScore()
         restartButton.style.display = "block";
         return;
       }
@@ -321,7 +334,7 @@ function animate(timestamp) {
 
 // Returns the platform the stick hit (if it didn't hit any stick then return undefined)
 function thePlatformTheStickHits() {
-  if (sticks.last().rotation != 90)
+  if (sticks.last().rotation !== 90)
     throw Error(`Stick is ${sticks.last().rotation}°`);
   const stickFarX = sticks.last().x + sticks.last().length;
 
@@ -485,7 +498,7 @@ function drawSticks() {
 
 function drawBackground() {
   // Draw sky
-  var gradient = ctx.createLinearGradient(0, 0, 0, window.innerHeight);
+  const gradient = ctx.createLinearGradient(0, 0, 0, window.innerHeight);
   gradient.addColorStop(0, "#BBD691");
   gradient.addColorStop(1, "#FEF1E1");
   ctx.fillStyle = gradient;
