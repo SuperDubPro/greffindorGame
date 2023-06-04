@@ -1,12 +1,27 @@
+@font-face {
+    font-family: 'EightBitDragon';
+    src: url('fonts/EightBitDragon.ttf');
+}
+
+
+
+:root {
+    --dialog-color: #000;
+    --dialog-border-width: 10px;
+}
+
 html,
 body {
     height: 100%;
     margin: 0;
     font-size: calc( (100vw - 480px)/(1280 - 480) * (24 - 16) + 24px);
 }
+button {
+    font-family: unset;
+}
 
 body {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "EightBitDragon", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     cursor: pointer;
     -webkit-tap-highlight-color:  rgba(255, 255, 255, 0);
 }
@@ -40,14 +55,15 @@ body {
     position: absolute;
     top: 40%;
     font-weight: 600;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "EightBitDragon", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    /*font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;*/
     text-align: center;
     transition: opacity 2s;
 }
 
 #restart {
-    width: 6rem;
-    height: 6rem;
+    width: 13vw;
+    height: 13vw;
     top: 40%;
     position: absolute;
     border-radius: 50%;
@@ -56,8 +72,8 @@ body {
     border: none;
     text-align: center;
     font-weight: 700;
-    font-size: 1.2rem;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 2.2vw;
+    /*font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;*/
     display: none;
     cursor: pointer;
 }
@@ -67,4 +83,125 @@ body {
     opacity: 0;
     top: 45%;
     transition: opacity 2s;
+}
+
+.dialog-8bit {
+    /*visibility: hidden;*/
+    position: absolute;
+    opacity: 0;
+
+    top: 15vh;
+    margin: 0 auto;
+    min-width: 80%;
+
+    float: left;
+    border-left: var(--dialog-border-width) solid var(--dialog-color);
+    border-right: var(--dialog-border-width) solid var(--dialog-color);
+
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+
+    transition: opacity .1s;
+}
+
+.dialog-8bit .container-8bit {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    color: var(--dialog-color);
+    padding: 2rem 1rem;
+    margin: calc(-1 * var(--dialog-border-width)) 0;
+    border-top: var(--dialog-border-width) solid var(--dialog-color);
+    border-bottom: var(--dialog-border-width) solid var(--dialog-color);
+    box-sizing: border-box;
+}
+
+.dialog-8bit::before,
+.dialog-8bit::after,
+.dialog-8bit .container-8bit::before,
+.dialog-8bit .container-8bit::after {
+    content: '';
+    width: var(--dialog-border-width);
+    height: var(--dialog-border-width);
+    display: block;
+    position: absolute;
+    background: var(--dialog-color);
+}
+
+.dialog-8bit::before { top: -5px; left: -5px }
+.dialog-8bit::after { top: -5px; right: -5px }
+.dialog-8bit .container-8bit::before { bottom: -5px; left: -5px }
+.dialog-8bit .container-8bit::after { bottom: -5px; right: -5px }
+
+.dialog-img {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 10rem;
+}
+
+.dialog-img-space {
+    width: 11rem;
+}
+
+#ron-phrase .container-8bit {
+    padding-top: 1rem;
+    padding-bottom: 3rem;
+}
+
+#snake-phrase .container-8bit {
+    flex-direction: row-reverse;
+}
+#snake-phrase .dialog-img {
+    left: unset;
+    right: 0;
+}
+
+@keyframes typing {
+    from {
+        width: 0
+    }
+}
+@keyframes blink {
+    50% {
+        border-color: transparent
+    }
+}
+
+.typing-ron-phrase {
+    width: 18ch;
+    animation: typing 1.8s steps(20), blink .4s step-end infinite alternate;
+}
+
+.typing-snake-phrase {
+    width: 13ch;
+    animation: typing 1.5s steps(15), blink .4s step-end infinite alternate;
+}
+
+.typing {
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 12px solid;
+    font-family: "EightBitDragon", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;;
+    font-size: 1em;
+}
+
+#sound {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    width: 10em;
+    height: 10em;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.sound-icon {
+    background-image: url("icons/sound.png");
+}
+.no-sound-icon {
+    background-image: url("icons/no-sound.png");
 }

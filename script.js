@@ -33,11 +33,15 @@ let sticks = [];
 let trees = [];
 
 let score = 0;
-const localStorageBestScoreKey = 'greffInDoorGameBestScore'
-const localBestScore = localStorage.getItem(localStorageBestScoreKey)
+const localStorageBestScoreKey = 'greffInDoorGameBestScore';
+const localBestScore = localStorage.getItem(localStorageBestScoreKey);
 let bestScore = localBestScore ? Number(localBestScore) : 0;
 
-const scale = window.devicePixelRatio
+const localStorageHasSoundKey = 'greffInDoorGameHasSound';
+const localHasSound = localStorage.getItem(localStorageHasSoundKey);
+let hasSound = localHasSound ? localHasSound === 'true' : true;
+
+const scale = window.devicePixelRatio;
 
 // Configuration
 const canvasWidth = 375;
@@ -52,7 +56,7 @@ const platformMaxWidth = 100 * scale;
 const stickWidth = 2 * scale;
 
 const heroDistanceFromEdge = 10; // While waiting
-const paddingX = 100; // The waiting position of the hero in from the original canvas size
+const paddingX = -100; // The waiting position of the hero in from the original canvas size
 const perfectAreaSize = 10 * scale;
 
 // The background moves slower than the hero
@@ -75,6 +79,14 @@ const fallingSpeed = 2 / scale;
 const heroWidth = 32 * scale; // 24
 const heroHeight = 32 * scale; // 40
 
+const ronPhraseDuration = 3000;
+const snakePhraseDuration = 3000;
+let isRonTalking = false;
+let isSnakeTalking = false;
+let doesSnakeWantTalk = false;
+const ronSound = new Audio("sound/ron.mp3");
+const snakeSound = new Audio("sound/snake.mp3");
+
 const canvas = document.getElementById("game");
 
 canvas.width = window.innerWidth; // Make the Canvas full screen
@@ -85,13 +97,17 @@ const ctx = canvas.getContext("2d");
 const introductionElement = document.getElementById("introduction");
 const perfectElement = document.getElementById("perfect");
 const restartButton = document.getElementById("restart");
+const soundButton = document.getElementById("sound");
 const scoreElement = document.getElementById("score");
 const bestScoreElement = document.getElementById("best-score-value");
+const ronPhrase = document.getElementById("ron-phrase");
+const snakePhrase = document.getElementById("snake-phrase");
 
+soundButton.classList.add(hasSound ? 'no-sound-icon' : 'sound-icon');
 bestScoreElement.innerText = bestScore
 
-const heroImg = new Image()
-heroImg.src = './assets/Ron.png'
+const heroImg = new Image();
+heroImg.src = './images/Ron.png';
 heroImg.onload = () => {
   // Initialize layout
   resetGame();
@@ -177,6 +193,52 @@ function generatePlatform() {
   platforms.push({ x, w });
 }
 
+function showSnakePhrase() {
+  doesSnakeWantTalk = true
+  if (isRonTalking) {
+    return;
+  }
+  isSnakeTalking = true;
+
+  snakePhrase.style.opacity = '1';
+  snakePhrase.querySelector('.typing').classList.add('typing-snake-phrase');
+
+  if (hasSound) {
+    snakeSound.play();
+  }
+
+  setTimeout(() => {
+    snakePhrase.style.opacity = '0';
+    snakePhrase.querySelector('.typing').classList.remove('typing-snake-phrase');
+    doesSnakeWantTalk = false;
+    isSnakeTalking = false;
+  }, snakePhraseDuration);
+}
+
+function showRonPhrase() {
+  if (score !== 0 || isSnakeTalking) {
+    return;
+  }
+
+  isRonTalking = true;
+  ronPhrase.style.opacity = '1';
+  ronPhrase.querySelector('.typing').classList.add('typing-ron-phrase');
+
+  if (hasSound) {
+    ronSound.play();
+  }
+
+  setTimeout(() => {
+    ronPhrase.style.opacity = '0';
+    ronPhrase.querySelector('.typing').classList.remove('typing-ron-phrase');
+    isRonTalking=false;
+
+    if (doesSnakeWantTalk) {
+      showSnakePhrase();
+    }
+  }, ronPhraseDuration);
+}
+
 // If space was pressed restart the game
 window.addEventListener("keydown", function (event) {
   if (event.key === " ") {
@@ -190,6 +252,7 @@ window.addEventListener("mousedown", function () {
     lastTimestamp = undefined;
     introductionElement.style.opacity = 0;
     phase = "stretching";
+    showRonPhrase();
     window.requestAnimationFrame(animate);
   }
 });
@@ -200,6 +263,7 @@ window.addEventListener("touchstart", function (e) {
     lastTimestamp = undefined;
     introductionElement.style.opacity = 0;
     phase = "stretching";
+    showRonPhrase();
     window.requestAnimationFrame(animate);
   }
 },  { passive: false });
@@ -227,8 +291,8 @@ window.requestAnimationFrame(animate);
 
 function setBestScore() {
   if (score > bestScore) {
-    localStorage.setItem(localStorageBestScoreKey, score)
-    bestScore = score
+    localStorage.setItem(localStorageBestScoreKey, score);
+    bestScore = score;
     bestScoreElement.innerText = score;
   }
 }
@@ -311,8 +375,11 @@ function animate(timestamp) {
       break;
     }
     case "falling": {
-      if (sticks.last().rotation < 180)
+      if (sticks.last().rotation < 180) {
         sticks.last().rotation += (timestamp - lastTimestamp) / turningSpeed;
+      }
+
+      showSnakePhrase();
 
       heroY += (timestamp - lastTimestamp) / fallingSpeed;
       const maxHeroY =
@@ -523,3 +590,19 @@ function getTreeY(x, baseHeight, amplitude) {
   const sineBaseY = window.innerHeight - baseHeight;
   return Math.sinus(x) * amplitude + sineBaseY;
 }
+
+function soundToggle(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  hasSound = !hasSound;
+  soundButton.classList.toggle('sound-icon');
+  soundButton.classList.toggle('no-sound-icon');
+  localStorage.setItem(localStorageHasSoundKey, hasSound);
+}
+
+soundButton.addEventListener('click', soundToggle);
+soundButton.addEventListener('touchstart', soundToggle);
+soundButton.addEventListener('touchend', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+})
