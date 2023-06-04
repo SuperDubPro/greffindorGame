@@ -37,9 +37,7 @@ const localStorageBestScoreKey = 'greffInDoorGameBestScore';
 const localBestScore = localStorage.getItem(localStorageBestScoreKey);
 let bestScore = localBestScore ? Number(localBestScore) : 0;
 
-const localStorageHasSoundKey = 'greffInDoorGameHasSound';
-const localHasSound = localStorage.getItem(localStorageHasSoundKey);
-let hasSound = localHasSound ? localHasSound === 'true' : true;
+let hasSound = false;
 
 const scale = window.devicePixelRatio;
 
@@ -84,8 +82,8 @@ const snakePhraseDuration = 3000;
 let isRonTalking = false;
 let isSnakeTalking = false;
 let doesSnakeWantTalk = false;
-const ronSound = new Audio("sound/ron.mp3");
-const snakeSound = new Audio("sound/snake.mp3");
+const ronSound = document.getElementById('ron-sound');
+const snakeSound = document.getElementById('snake-sound');
 
 const canvas = document.getElementById("game");
 
@@ -595,12 +593,15 @@ function soundToggle(e) {
   e.preventDefault();
   e.stopPropagation();
   hasSound = !hasSound;
+
+  ronSound.muted = !hasSound
+  snakeSound.muted = !hasSound
+
   soundButton.classList.toggle('sound-icon');
   soundButton.classList.toggle('no-sound-icon');
-  localStorage.setItem(localStorageHasSoundKey, hasSound);
 }
 
-soundButton.addEventListener('click', soundToggle);
+soundButton.addEventListener('mousedown', soundToggle);
 soundButton.addEventListener('touchstart', soundToggle);
 soundButton.addEventListener('touchend', (e) => {
   e.preventDefault();
