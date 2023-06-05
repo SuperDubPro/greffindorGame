@@ -78,12 +78,15 @@ const heroWidth = 32 * scale; // 24
 const heroHeight = 32 * scale; // 40
 
 const ronPhraseDuration = 3000;
+const germPhraseDuration = 3000;
 const snakePhraseDuration = 3000;
 let isRonTalking = false;
+let isGermTalking = false;
 let isSnakeTalking = false;
 let doesSnakeWantTalk = false;
 const ronSound = document.getElementById('ron-sound');
 const snakeSound = document.getElementById('snake-sound');
+const germSound = document.getElementById('germ-sound');
 
 const stickSound = document.getElementById('drum-stick-low');
 const doubleSound = document.getElementById('drum-stick-hi');
@@ -103,6 +106,7 @@ const scoreElement = document.getElementById("score");
 const bestScoreElement = document.getElementById("best-score-value");
 const ronPhrase = document.getElementById("ron-phrase");
 const snakePhrase = document.getElementById("snake-phrase");
+const germPhrase = document.getElementById("germ-phrase");
 
 soundButton.classList.add(hasSound ? 'sound-icon' : 'no-sound-icon');
 bestScoreElement.innerText = bestScore
@@ -196,7 +200,7 @@ function generatePlatform() {
 
 function showSnakePhrase() {
   doesSnakeWantTalk = true
-  if (isRonTalking) {
+  if (isRonTalking || isGermTalking) {
     return;
   }
   isSnakeTalking = true;
@@ -234,6 +238,28 @@ function showRonPhrase() {
       showSnakePhrase();
     }
   }, ronPhraseDuration);
+}
+
+function showGermPhrase() {
+  if (isGermTalking || isRonTalking || isSnakeTalking) {
+    return;
+  }
+
+  isGermTalking = true;
+  germPhrase.style.opacity = '1';
+  germPhrase.querySelector('.typing').classList.add('typing-germ-phrase');
+
+  germSound.play();
+
+  setTimeout(() => {
+    germPhrase.style.opacity = '0';
+    germPhrase.querySelector('.typing').classList.remove('typing-germ-phrase');
+    isGermTalking=false;
+
+    if (doesSnakeWantTalk) {
+      showSnakePhrase();
+    }
+  }, germPhraseDuration);
 }
 
 // If space was pressed restart the game
@@ -329,6 +355,7 @@ function animate(timestamp) {
           scoreElement.innerText = score;
 
           if (perfectHit) {
+            showGermPhrase();
             perfectElement.style.opacity = 1;
             setTimeout(() => (perfectElement.style.opacity = 0), 1000);
           }
@@ -604,6 +631,7 @@ function soundToggle(e) {
   snakeSound.muted = !hasSound;
   stickSound.muted = !hasSound;
   doubleSound.muted = !hasSound;
+  germSound.muted = !hasSound;
 
   soundButton.classList.toggle('sound-icon');
   soundButton.classList.toggle('no-sound-icon');

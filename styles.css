@@ -150,10 +150,10 @@ body {
     padding-bottom: 3rem;
 }
 
-#snake-phrase .container-8bit {
-    flex-direction: row-reverse;
+.container-8bit-right {
+    flex-direction: row-reverse !important;
 }
-#snake-phrase .dialog-img {
+.dialog-img-right {
     left: unset;
     right: 0;
 }
@@ -177,6 +177,11 @@ body {
 .typing-snake-phrase {
     width: 13ch;
     animation: typing 1.5s steps(15), blink .4s step-end infinite alternate;
+}
+
+.typing-germ-phrase {
+    width: 15ch;
+    animation: typing 1.5s steps(19), blink .4s step-end infinite alternate;
 }
 
 .typing {
