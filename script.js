@@ -85,6 +85,9 @@ let doesSnakeWantTalk = false;
 const ronSound = document.getElementById('ron-sound');
 const snakeSound = document.getElementById('snake-sound');
 
+const stickSound = document.getElementById('drum-stick-low');
+const doubleSound = document.getElementById('drum-stick-hi');
+
 const canvas = document.getElementById("game");
 
 canvas.width = window.innerWidth; // Make the Canvas full screen
@@ -101,7 +104,7 @@ const bestScoreElement = document.getElementById("best-score-value");
 const ronPhrase = document.getElementById("ron-phrase");
 const snakePhrase = document.getElementById("snake-phrase");
 
-soundButton.classList.add(hasSound ? 'no-sound-icon' : 'sound-icon');
+soundButton.classList.add(hasSound ? 'sound-icon' : 'no-sound-icon');
 bestScoreElement.innerText = bestScore
 
 const heroImg = new Image();
@@ -201,9 +204,7 @@ function showSnakePhrase() {
   snakePhrase.style.opacity = '1';
   snakePhrase.querySelector('.typing').classList.add('typing-snake-phrase');
 
-  if (hasSound) {
-    snakeSound.play();
-  }
+  snakeSound.play();
 
   setTimeout(() => {
     snakePhrase.style.opacity = '0';
@@ -222,9 +223,7 @@ function showRonPhrase() {
   ronPhrase.style.opacity = '1';
   ronPhrase.querySelector('.typing').classList.add('typing-ron-phrase');
 
-  if (hasSound) {
-    ronSound.play();
-  }
+  ronSound.play();
 
   setTimeout(() => {
     ronPhrase.style.opacity = '0';
@@ -317,6 +316,13 @@ function animate(timestamp) {
         sticks.last().rotation = 90;
 
         const [nextPlatform, perfectHit] = thePlatformTheStickHits();
+
+        if (perfectHit) {
+          doubleSound.play();
+        } else {
+          stickSound.play();
+        }
+
         if (nextPlatform) {
           // Increase score
           score += perfectHit ? 2 : 1;
@@ -594,8 +600,10 @@ function soundToggle(e) {
   e.stopPropagation();
   hasSound = !hasSound;
 
-  ronSound.muted = !hasSound
-  snakeSound.muted = !hasSound
+  ronSound.muted = !hasSound;
+  snakeSound.muted = !hasSound;
+  stickSound.muted = !hasSound;
+  doubleSound.muted = !hasSound;
 
   soundButton.classList.toggle('sound-icon');
   soundButton.classList.toggle('no-sound-icon');

@@ -198,10 +198,13 @@ body {
     cursor: pointer;
     background-repeat: no-repeat;
     background-position: center;
+    transition: opacity .4s;
 }
 .sound-icon {
     background-image: url("icons/sound.png");
+    opacity: .8;
 }
 .no-sound-icon {
     background-image: url("icons/no-sound.png");
+    opacity: .5;
 }
